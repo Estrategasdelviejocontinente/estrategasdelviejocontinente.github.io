@@ -1,1 +1,13 @@
-npm install node-fetch @supabase/supabase-js
+{
+  "name": "mi-bot-telegram",
+  "version": "1.0.0",
+  "description": "Bot de Telegram para gestionar tareas",
+  "main": "index.js",
+  "scripts": {
+    "start": "node api/bot.js"
+  },
+  "dependencies": {
+    "node-fetch": "^3.2.0",
+    "@supabase/supabase-js": "^1.30.0"
+  }
+}

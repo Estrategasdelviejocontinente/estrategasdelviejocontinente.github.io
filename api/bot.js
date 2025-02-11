@@ -1,10 +1,8 @@
-import fetch from 'node-fetch';
-import { createClient } from '@supabase/supabase-js';
+import fetch from 'node-fetch'; // Para interactuar con la API de Telegram
+import { createClient } from '@supabase/supabase-js'; // Para interactuar con Supabase
 
-// Crear el cliente de Supabase
-const supabase = createClient('https://<your-supabase-url>', '<your-supabase-key>');
-
-const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN; // Aquí va tu token de Telegram
+const TELEGRAM_TOKEN = process.env.7951593432:AAF8I44AHpas0bufwDdyotiFR8Pvl_3ihck; // Token del bot de Telegram
+const supabase = createClient('https://<tu-url-de-supabase>', '<tu-clave-de-supabase>'); // Configuración de Supabase
 
 export default async (req, res) => {
   const { message } = req.body;
@@ -13,60 +11,44 @@ export default async (req, res) => {
     return res.status(400).send('No message received');
   }
 
-  const chatId = message.chat.id;
   const text = message.text;
 
-  // Si el usuario quiere agregar una tarea
-  if (text.startsWith('Añadir tarea:')) {
-    const task = text.slice(14).trim(); // Elimina el prefijo "Añadir tarea:"
-    
-    // Guardar la tarea en Supabase
+  // Si quieres gestionar tareas (sin guardar chat_id):
+  if (text.startsWith('/add')) {
+    const task = text.replace('/add ', ''); // Extraer tarea del mensaje
+    // Aquí solo almacenarías la tarea en Supabase sin el chat_id
     const { data, error } = await supabase
       .from('tasks')
-      .insert([{ chat_id: chatId, task: task }]);
+      .insert([{ task }]);  // Solo insertamos la tarea, sin el chat_id
 
     if (error) {
-      return res.status(500).send('Error guardando tarea');
+      return res.status(500).send('Error guardando la tarea');
     }
 
-    // Responder al usuario
-    await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: `Tarea añadida: ${task}`,
-      }),
-    });
-
-    return res.status(200).send('Tarea añadida');
+    return res.status(200).send(`Tarea añadida: ${task}`);
   }
 
-  // Si el usuario quiere ver sus tareas
-  if (text === 'Mis tareas') {
-    const { data, error } = await supabase
-      .from('tasks')
-      .select('*')
-      .eq('chat_id', chatId);
+  // Si quieres ver las tareas (sin chat_id):
+  if (text === '/tasks') {
+    const { data, error } = await supabase.from('tasks').select();
 
     if (error) {
-      return res.status(500).send('Error obteniendo tareas');
+      return res.status(500).send('Error al obtener las tareas');
     }
 
-    const tasksList = data.map((task) => `- ${task.task}`).join('\n');
+    if (data.length === 0) {
+      return res.status(200).send('No tienes tareas pendientes.');
+    }
 
-    await fetch(`https://api.telegram.org/bot${TELEGRAM_TOKEN}/sendMessage`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        chat_id: chatId,
-        text: tasksList || 'No tienes tareas pendientes.',
-      }),
+    let tasksMessage = 'Tus tareas:\n';
+    data.forEach((task, index) => {
+      tasksMessage += `${index + 1}. ${task.task}\n`;
     });
 
-    return res.status(200).send('Tareas enviadas');
+    return res.status(200).send(tasksMessage);
   }
 
   return res.status(200).send('Comando no reconocido');
 };
 
+  

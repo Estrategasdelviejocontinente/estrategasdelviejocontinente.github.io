@@ -30,6 +30,18 @@ export default async (req, res) => {
 
     return res.status(200).send(`Tarea añadida: ${task}`);
   }
+console.log("Conectando a Supabase...");
+const { data, error } = await supabase
+  .from('tasks')
+  .insert([{ task }]);
+
+if (error) {
+  console.error("Error al insertar tarea:", error);
+  return res.status(500).send("Error al guardar la tarea");
+}
+
+console.log("Tarea guardada:", data);
+return res.status(200).send(`Tarea añadida: ${task}`);
 
   // Si quieres ver las tareas (sin chat_id):
   if (text === '/tasks') {

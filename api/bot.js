@@ -32,8 +32,7 @@ export default async (req, res) => {
     // Almacenar la tarea en Supabase
     const { data, error } = await supabase
       .from('tasks')
-      .insert([{ chat_id: message.chat.id, task }]);
-
+      .insert([{ task }]);
 
 
     if (error) {

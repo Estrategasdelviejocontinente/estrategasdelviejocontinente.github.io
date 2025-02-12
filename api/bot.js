@@ -1,8 +1,12 @@
 import fetch from 'node-fetch'; // Para interactuar con la API de Telegram
 import { createClient } from '@supabase/supabase-js'; // Para interactuar con Supabase
 
-const TELEGRAM_TOKEN = process.env.7951593432:AAF8I44AHpas0bufwDdyotiFR8Pvl_3ihck; // Token del bot de Telegram
-const supabase = createClient('https://<tu-url-de-supabase>', '<tu-clave-de-supabase>'); // Configuración de Supabase
+// Token del bot de Telegram desde las variables de entorno
+const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;
+
+// Conexión a Supabase desde las variables de entorno
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_ANON_KEY);
+
 
 export default async (req, res) => {
   const { message } = req.body;

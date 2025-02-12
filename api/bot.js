@@ -31,8 +31,9 @@ export default async (req, res) => {
 
     // Almacenar la tarea en Supabase
     const { data, error } = await supabase
-      .from('tasks')
-      .insert([{ task }]);
+    .from('tasks')
+    .insert([{ chat_id: message.chat.id, task }]);
+
 
     if (error) {
       return res.status(500).send('Error guardando la tarea');

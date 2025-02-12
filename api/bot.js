@@ -1,5 +1,7 @@
-import fetch from 'node-fetch'; // Para interactuar con la API de Telegram
-import { createClient } from '@supabase/supabase-js'; // Para interactuar con Supabase
+// En lugar de importar con 'import'
+const fetch = require('node-fetch');
+const { createClient } = require('@supabase/supabase-js');
+
 
 // Token del bot de Telegram desde las variables de entorno
 const TELEGRAM_TOKEN = process.env.TELEGRAM_TOKEN;

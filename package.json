@@ -1,4 +1,11 @@
 {
+  "type": "module",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.0.0"
+  }
+}
+
+{
   "name": "mi-bot-telegram",
   "version": "1.0.0",
   "description": "Bot de Telegram para gestionar tareas",
